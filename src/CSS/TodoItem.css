@@ -1,0 +1,63 @@
+.todo-item {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 12px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.todo-item:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.todo-item.completed {
+  opacity: 0.6;
+  text-decoration: line-through;
+}
+
+.priority-badge {
+  padding: 4px 10px;
+  border-radius: var(--border-radius);
+  font-size: 0.9em;
+  color: white;
+}
+
+.priority-badge.low {
+  background: #4caf50;
+}
+
+.priority-badge.medium {
+  background: #ff9800;
+}
+
+.priority-badge.high {
+  background: #f44336;
+}
+
+.todo-item__actions {
+  display: flex;
+  gap: 5px;
+  margin-left: auto;
+}
+
+.todo-item__actions button {
+  background: none;
+  border: none;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.todo-item__actions .edit-btn {
+  color: var(--secondary-color);
+}
+
+.todo-item__actions .delete-btn {
+  color: var(--danger-color);
+}
+
+.todo-item__actions button:hover {
+  transform: scale(1.2);
+}

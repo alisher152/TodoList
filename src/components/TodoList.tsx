@@ -1,138 +1,81 @@
-import React, { useState } from "react";
-import TodoTypes from "../todo";
+import React, { useState, useEffect } from "react";
 import TodoService from "../TodoService";
-import { FaEdit, FaCheck } from "react-icons/fa";
-import { GiCancel } from "react-icons/gi";
-import { RiDeleteBin5Fill } from "react-icons/ri";
 import TodoForm from "./TodoForm";
+import TodoItem from "./TodoItem";
+import { TodoTypes } from "../todo";
 import "../CSS/TodoList.css";
 
 const TodoList: React.FC = () => {
-  const [todos, setTodos] = useState<TodoTypes[]>(TodoService.getTodos());
-  const [editingTodoId, setEditedTodoId] = useState<number | null>(null);
-  const [editedTodoText, setEditedTodoText] = useState<string>("");
-  const [selectedTodos, setSelectedTodos] = useState<Set<number>>(new Set());
+  const [todos, setTodos] = useState<TodoTypes[]>([]);
+  const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
 
-  const toggleSelect = (id: number) => {
-    setSelectedTodos((prev) => {
-      const newSet = new Set(prev);
-      newSet.has(id) ? newSet.delete(id) : newSet.add(id);
-      return newSet;
-    });
-  };
+  useEffect(() => {
+    setTodos(TodoService.getTodos());
+  }, []);
 
-  const deleteSelected = () => {
-    const newTodos = todos.filter((todo) => !selectedTodos.has(todo.id));
-    selectedTodos.forEach((id) => TodoService.deleteTodo(id));
-    setTodos(newTodos);
-    setSelectedTodos(new Set());
-  };
-
-  const handleEditStart = (id: number, text: string) => {
-    setEditedTodoId(id);
-    setEditedTodoText(text);
-  };
-
-  const handleEditCancel = () => {
-    setEditedTodoId(null);
-    setEditedTodoText("");
-  };
-
-  const handleEditSave = (id: number) => {
-    if (editedTodoText.trim() !== "") {
-      const updatedTodo = TodoService.updateTodo({
-        id,
-        text: editedTodoText.trim(),
-        completed: todos.find((todo) => todo.id === id)?.completed || false,
-      });
-      setTodos((prev) =>
-        prev.map((todo) => (todo.id === id ? updatedTodo : todo))
-      );
-      setEditedTodoId(null);
-      setEditedTodoText("");
-    }
-  };
-
-  const handleDeleteTodo = (id: number) => {
-    TodoService.deleteTodo(id);
-    setTodos((prev) => prev.filter((todo) => todo.id !== id));
-  };
-
+  const handleAddTodo = (newTodo: TodoTypes) => setTodos([...todos, newTodo]);
   const handleToggleComplete = (id: number) => {
-    const updatedTodos = todos.map((todo) =>
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
     );
-    setTodos(updatedTodos);
-    TodoService.updateTodo(updatedTodos.find((todo) => todo.id === id)!);
   };
+  const handleEditTodo = (id: number, newText: string) => {
+    setTodos(
+      todos.map((todo) => (todo.id === id ? { ...todo, text: newText } : todo))
+    );
+  };
+  const handleDeleteTodo = (id: number) =>
+    setTodos(todos.filter((todo) => todo.id !== id));
+
+  // 📌 Фильтрация задач в зависимости от выбранного фильтра
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === "active") return !todo.completed;
+    if (filter === "completed") return todo.completed;
+    return true;
+  });
 
   return (
-    <div className="todoContainer">
-      <TodoForm setTodos={setTodos} />
+    <div className="todo-container">
+      <h1>Task List</h1>
 
-      {selectedTodos.size > 0 && (
-        <button className="bulkDelete" onClick={deleteSelected}>
-          Delete Selected ({selectedTodos.size})
+      {/* 📌 Фильтры */}
+      <div className="filter-buttons">
+        <button
+          className={filter === "all" ? "active" : ""}
+          onClick={() => setFilter("all")}
+        >
+          All
         </button>
-      )}
+        <button
+          className={filter === "active" ? "active" : ""}
+          onClick={() => setFilter("active")}
+        >
+          Active
+        </button>
+        <button
+          className={filter === "completed" ? "active" : ""}
+          onClick={() => setFilter("completed")}
+        >
+          Completed
+        </button>
+      </div>
 
-      {todos.length === 0 ? (
-        <p className="empty-message">No todos yet. Add your first task!</p>
-      ) : (
-        todos.map((todo) => (
-          <div
-            className={`items ${todo.completed ? "completed" : ""}`}
+      <TodoForm onAddTodo={handleAddTodo} />
+
+      {/* 📌 Отображение отфильтрованных задач */}
+      <div className="todo-list">
+        {filteredTodos.map((todo) => (
+          <TodoItem
             key={todo.id}
-          >
-            <input
-              type="checkbox"
-              checked={selectedTodos.has(todo.id)}
-              onChange={() => toggleSelect(todo.id)}
-            />
-
-            {editingTodoId === todo.id ? (
-              <div className="editingText">
-                <input
-                  type="text"
-                  value={editedTodoText}
-                  onChange={(e) => setEditedTodoText(e.target.value)}
-                  autoFocus
-                  onKeyDown={(e) =>
-                    e.key === "Enter" && handleEditSave(todo.id)
-                  }
-                />
-                <button onClick={() => handleEditSave(todo.id)}>
-                  <FaCheck />
-                </button>
-                <button className="cancelBtn" onClick={handleEditCancel}>
-                  <GiCancel />
-                </button>
-              </div>
-            ) : (
-              <div className="editBtn">
-                <input
-                  type="checkbox"
-                  checked={todo.completed}
-                  onChange={() => handleToggleComplete(todo.id)}
-                />
-                <span className={todo.completed ? "completed-text" : ""}>
-                  {todo.text}
-                </span>
-                <button onClick={() => handleEditStart(todo.id, todo.text)}>
-                  <FaEdit />
-                </button>
-              </div>
-            )}
-
-            <button
-              className="deleteBtn"
-              onClick={() => handleDeleteTodo(todo.id)}
-            >
-              <RiDeleteBin5Fill />
-            </button>
-          </div>
-        ))
-      )}
+            todo={todo}
+            onToggleComplete={handleToggleComplete}
+            onEdit={handleEditTodo}
+            onDelete={handleDeleteTodo}
+          />
+        ))}
+      </div>
     </div>
   );
 };

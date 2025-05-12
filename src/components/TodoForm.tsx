@@ -1,34 +1,52 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import TodoService from "../TodoService";
-import TodoTypes from "../todo";
+import { TodoTypes } from "../todo";
 import "../CSS/TodoForm.css";
 
-interface PropTypes {
-  setTodos: Dispatch<SetStateAction<TodoTypes[]>>;
+interface TodoFormProps {
+  onAddTodo: (todo: TodoTypes) => void;
 }
 
-const TodoForm: React.FC<PropTypes> = ({ setTodos }) => {
-  const [newTodoText, setNewTodoText] = useState<string>("");
+const TodoForm: React.FC<TodoFormProps> = ({ onAddTodo }) => {
+  const [text, setText] = useState("");
+  const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
+  const [deadline, setDeadline] = useState("");
 
-  const handleAddTodo = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newTodoText.trim() !== "") {
-      const newTodo = TodoService.addTodo(newTodoText.trim());
-      setTodos((prevTodos) => [...prevTodos, newTodo]);
-      setNewTodoText("");
+    if (text.trim()) {
+      const deadlineDate = deadline ? new Date(deadline) : undefined;
+      const newTodo = TodoService.addTodo(text, priority, deadlineDate);
+      onAddTodo(newTodo);
+      setText("");
+      setPriority("medium");
+      setDeadline("");
     }
   };
 
   return (
-    <form className="inputForm" onSubmit={handleAddTodo}>
+    <form onSubmit={handleSubmit} className="todo-form">
       <input
         type="text"
-        value={newTodoText}
-        onChange={(e) => setNewTodoText(e.target.value)}
-        autoFocus
-        placeholder="Add a Task"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="What needs to be done?"
+        className="todo-input"
       />
-      <button type="submit">Add Todo</button>
+      <select
+        value={priority}
+        onChange={(e) => setPriority(e.target.value as any)}
+      >
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+      <input
+        type="date"
+        value={deadline}
+        onChange={(e) => setDeadline(e.target.value)}
+      />
+      <button type="submit">Add a Task</button>
     </form>
   );
 };

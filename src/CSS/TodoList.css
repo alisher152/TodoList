@@ -1,121 +1,40 @@
-.todoContainer {
+.todo-container {
   width: 90%;
   max-width: 700px;
-  margin: 3rem auto;
-  background-color: #f5f5f5;
+  background: white;
   padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  margin-left: 20px;
 }
 
-.items {
+.filter-buttons {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-buttons button {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--primary-color);
   background-color: white;
-  padding: 1rem;
-  border-radius: 10px;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease-in-out;
-}
-
-.items.completed {
-  opacity: 0.6;
-  text-decoration: line-through;
-}
-
-.editBtn {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex: 1;
-  margin-left: 1rem;
-}
-
-.editBtn span {
   font-size: 1rem;
-}
-
-.editBtn button {
-  background-color: transparent;
-  border: none;
-  font-size: 1.2rem;
-  color: #6200ea;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: var(--transition);
 }
 
-.editBtn button:hover {
-  transform: scale(1.2);
-}
-
-.deleteBtn {
-  background-color: transparent;
-  border: none;
-  color: #e53935;
-  font-size: 1.4rem;
-  cursor: pointer;
-  margin-left: 1rem;
-  transition: all 0.2s ease-in-out;
-}
-
-.deleteBtn:hover {
-  transform: scale(1.2);
-}
-
-.editingText {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex: 1;
-  margin-left: 1rem;
-}
-
-.editingText input {
-  flex: 1;
-  padding: 0.6rem 1rem;
-  font-size: 1rem;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-}
-
-.editingText button {
-  background-color: transparent;
-  border: none;
-  font-size: 1.3rem;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-.editingText button:hover {
-  transform: scale(1.2);
-}
-
-.cancelBtn {
-  color: #ff5722;
-}
-
-.completed-text {
-  text-decoration: line-through;
-  opacity: 0.6;
-}
-
-.bulkDelete {
-  display: block;
-  margin: 1.5rem auto;
-  padding: 0.75rem 1.5rem;
-  background-color: #e53935;
+.filter-buttons button:hover,
+.filter-buttons .active {
+  background-color: var(--primary-color);
   color: white;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
 }
 
-.bulkDelete:hover {
-  background-color: #c62828;
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .empty-message {

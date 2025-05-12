@@ -1,23 +1,34 @@
-// Имитация сервиса с локальным состоянием в памяти
-import TodoTypes from "./todo";
+import { TodoTypes } from "./todo";
 
-let todos: TodoTypes[] = [];
-let nextId = 1;
+const todos: TodoTypes[] = [];
 
-const TodoService = {
-  getTodos: () => [...todos],
-  addTodo: (text: string): TodoTypes => {
-    const newTodo = { id: nextId++, text, completed: false };
+export default {
+  getTodos: () => todos,
+  addTodo: (
+    text: string,
+    priority: "low" | "medium" | "high",
+    deadline?: Date
+  ) => {
+    const newTodo: TodoTypes = {
+      id: todos.length + 1,
+      text,
+      completed: false,
+      priority,
+      deadline: deadline?.toISOString() || undefined,
+      createdAt: new Date().toISOString(),
+    };
     todos.push(newTodo);
     return newTodo;
   },
-  updateTodo: (updated: TodoTypes): TodoTypes => {
-    todos = todos.map((todo) => (todo.id === updated.id ? updated : todo));
-    return updated;
+  updateTodo: (updatedTodo: TodoTypes) => {
+    const index = todos.findIndex((todo) => todo.id === updatedTodo.id);
+    if (index !== -1) todos[index] = updatedTodo;
   },
   deleteTodo: (id: number) => {
-    todos = todos.filter((todo) => todo.id !== id);
+    const index = todos.findIndex((todo) => todo.id === id);
+    if (index !== -1) todos.splice(index, 1);
+  },
+  deleteCompleted: () => {
+    todos.filter((todo) => !todo.completed);
   },
 };
-
-export default TodoService;
