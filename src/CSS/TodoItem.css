@@ -1,63 +1,157 @@
+:root {
+  --secondary-color: #10b981;
+  --danger-color: #ef4444;
+  --warning-color: #f59e0b;
+  --text-color: #1f2937;
+  --text-light: #6b7280;
+  --light-gray: #e5e7eb;
+  --border-radius: 12px;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
 .todo-item {
   display: flex;
   align-items: center;
   background: white;
-  padding: 12px;
+  padding: 1rem 1.25rem;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-sm);
   transition: var(--transition);
+  position: relative;
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
 .todo-item:hover {
+  transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
-.todo-item.completed {
-  opacity: 0.6;
+.todo-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+  background: #d1d5db;
+}
+
+.todo-item.completed::before {
+  background: var(--secondary-color);
+}
+
+.todo-checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 1rem;
+  cursor: pointer;
+  accent-color: var(--secondary-color);
+}
+
+.todo-text {
+  flex: 1;
+  font-size: 1rem;
+  margin-right: 1rem;
+}
+
+.todo-item.completed .todo-text {
   text-decoration: line-through;
+  color: var(--text-light);
+}
+
+.todo-date {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-right: 1rem;
 }
 
 .priority-badge {
-  padding: 4px 10px;
-  border-radius: var(--border-radius);
-  font-size: 0.9em;
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 500;
   color: white;
+  margin-right: 1rem;
 }
 
 .priority-badge.low {
-  background: #4caf50;
+  background: var(--secondary-color);
 }
 
 .priority-badge.medium {
-  background: #ff9800;
+  background: var(--warning-color);
 }
 
 .priority-badge.high {
-  background: #f44336;
+  background: var(--danger-color);
 }
 
-.todo-item__actions {
+.todo-actions {
   display: flex;
-  gap: 5px;
+  gap: 0.5rem;
   margin-left: auto;
 }
 
-.todo-item__actions button {
+.todo-actions button {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
-  font-size: 1.1em;
+  border-radius: 50%;
   cursor: pointer;
   transition: var(--transition);
+  color: var(--text-light);
 }
 
-.todo-item__actions .edit-btn {
+.todo-actions button:hover {
+  background-color: #f3f4f6;
+  color: var(--text-color);
+  transform: scale(1.1);
+}
+
+.todo-actions .edit-btn:hover {
   color: var(--secondary-color);
 }
 
-.todo-item__actions .delete-btn {
+.todo-actions .delete-btn:hover {
   color: var(--danger-color);
 }
 
-.todo-item__actions button:hover {
-  transform: scale(1.2);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .todo-item {
+    flex-wrap: wrap;
+    padding: 1rem;
+  }
+
+  .todo-text {
+    order: 1;
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  .todo-date,
+  .priority-badge {
+    margin-right: 0.5rem;
+  }
 }

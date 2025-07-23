@@ -1,44 +1,51 @@
+:root {
+  --primary-color: #7c3aed;
+  --light-gray: #e5e7eb;
+  --border-radius: 12px;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .todo-container {
-  width: 90%;
-  max-width: 700px;
-  background: white;
-  padding: 2rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-md);
-  margin-left: 20px;
+  padding: 0 2rem 2rem;
 }
 
 .filter-buttons {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
 }
 
 .filter-buttons button {
   flex: 1;
-  padding: 8px 12px;
+  padding: 0.5rem;
   border-radius: var(--border-radius);
-  border: 2px solid var(--primary-color);
+  border: 1px solid var(--light-gray);
   background-color: white;
-  font-size: 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
 }
 
-.filter-buttons button:hover,
+.filter-buttons button:hover {
+  background-color: #f3f4f6;
+}
+
 .filter-buttons .active {
   background-color: var(--primary-color);
   color: white;
+  border-color: var(--primary-color);
 }
 
 .todo-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0.75rem;
 }
 
 .empty-message {
   text-align: center;
+  padding: 2rem;
+  color: #6b7280;
   font-style: italic;
-  color: #777;
 }
